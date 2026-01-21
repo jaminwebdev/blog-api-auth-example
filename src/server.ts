@@ -48,12 +48,21 @@ app.use(helmet());
 
 app.use(limiter);
 
-app.get("/", (req, res) => {
-  res.json({
-    message: "Howdy partner",
-  });
-});
+(async () => {
+  try {
+    app.get("/", (req, res) => {
+      res.json({
+        message: "Howdy partner",
+      });
+    });
 
-app.listen(config.PORT, () => {
-  console.log(`Server listening on port ${config.PORT}`);
-});
+    app.listen(config.PORT, () => {
+      console.log(`Server listening on port ${config.PORT}`);
+    });
+  } catch (err) {
+    console.log(`Failed to start the server`, err);
+    if (config.NODE_ENV === "production") {
+      process.exit(1);
+    }
+  }
+})();
