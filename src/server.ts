@@ -8,6 +8,8 @@ import config from "@/config";
 import type { CorsOptions } from "cors";
 import limiter from "@/lib/express_rate_limit";
 
+import v1Routes from "@/routes/v1";
+
 const app = express();
 
 const corsOptions: CorsOptions = {
@@ -50,11 +52,7 @@ app.use(limiter);
 
 (async () => {
   try {
-    app.get("/", (req, res) => {
-      res.json({
-        message: "Howdy partner",
-      });
-    });
+    app.use("/api/v1", v1Routes);
 
     app.listen(config.PORT, () => {
       console.log(`Server listening on port ${config.PORT}`);
