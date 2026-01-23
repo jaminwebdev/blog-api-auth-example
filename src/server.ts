@@ -1,24 +1,20 @@
-import express from "express";
-import cors from "cors";
-import cookieParser from "cookie-parser";
-import compression from "compression";
-import helmet from "helmet";
+import express from 'express';
+import cors from 'cors';
+import cookieParser from 'cookie-parser';
+import compression from 'compression';
 
-import config from "@/config";
-import type { CorsOptions } from "cors";
-import limiter from "@/lib/express_rate_limit";
+import config from './config/index.js';
+import type { CorsOptions } from 'cors';
+import limiter from './lib/express_rate_limit.js';
+import lusca from 'lusca';
 
-import v1Routes from "@/routes/v1";
+import v1Routes from './routes/v1/index.js';
 
 const app = express();
 
 const corsOptions: CorsOptions = {
   origin(origin, callback) {
-    if (
-      config.NODE_ENV === "development" ||
-      !origin ||
-      config.WHITELIST_ORIGINS.includes(origin)
-    ) {
+    if (config.NODE_ENV === 'development' || !origin || config.WHITELIST_ORIGINS.includes(origin)) {
       callback(null, true);
     } else {
       // Reject requests fom non whitelisted origins
@@ -46,21 +42,17 @@ app.use(
 );
 
 // default security
-app.use(helmet());
+app.use(lusca.xframe('SAMEORIGIN'));
+app.use(lusca.xssProtection(true));
 
 app.use(limiter);
 
-(async () => {
-  try {
-    app.use("/api/v1", v1Routes);
+app.use('/api/v1', v1Routes);
 
-    app.listen(config.PORT, () => {
-      console.log(`Server listening on port ${config.PORT}`);
-    });
-  } catch (err) {
-    console.log(`Failed to start the server`, err);
-    if (config.NODE_ENV === "production") {
-      process.exit(1);
-    }
-  }
-})();
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(config.PORT, () => {
+    console.log(`Server listening on port ${config.PORT}`);
+  });
+}
+
+export default app;

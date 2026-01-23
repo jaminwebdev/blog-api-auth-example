@@ -4,20 +4,21 @@
   "description": "",
   "main": "dist/server.js",
   "scripts": {
-    "dev": "nodemon"
+    "dev": "node --watch --env-file=.env --loader ts-node/esm src/server.ts",
+    "test": "NODE_ENV=test node --test --loader ts-node/esm --unhandled-rejections=strict src/test/v1.test.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
+  "type": "module",
   "dependencies": {
+    "@types/lusca": "^1.7.5",
     "compression": "^1.8.1",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
-    "dotenv": "^17.2.3",
     "express": "^5.2.1",
     "express-rate-limit": "^8.2.1",
-    "helmet": "^8.1.0"
+    "lusca": "^1.7.0"
   },
   "devDependencies": {
     "@types/compression": "^1.8.1",
@@ -25,8 +26,9 @@
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/node": "^25.0.9",
-    "nodemon": "^3.1.11",
+    "@types/supertest": "^6.0.3",
     "prettier": "^3.8.1",
+    "supertest": "^7.2.2",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.9.3"
